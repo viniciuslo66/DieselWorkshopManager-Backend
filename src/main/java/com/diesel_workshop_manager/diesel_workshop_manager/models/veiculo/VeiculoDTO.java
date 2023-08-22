@@ -1,4 +1,4 @@
-package com.diesel_workshop_manager.diesel_workshop_manager.models.dto;
+package com.diesel_workshop_manager.diesel_workshop_manager.models.veiculo;
 
 import lombok.Builder;
 import lombok.Data;

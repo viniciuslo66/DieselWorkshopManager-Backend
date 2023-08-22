@@ -1,4 +1,4 @@
-package com.diesel_workshop_manager.diesel_workshop_manager.models.entity;
+package com.diesel_workshop_manager.diesel_workshop_manager.models.endereco;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;

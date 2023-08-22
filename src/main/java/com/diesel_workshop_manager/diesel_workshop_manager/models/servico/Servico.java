@@ -1,4 +1,4 @@
-package com.diesel_workshop_manager.diesel_workshop_manager.models.entity;
+package com.diesel_workshop_manager.diesel_workshop_manager.models.servico;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,19 +10,16 @@ import lombok.Data;
 
 @Data
 @Builder
-@Entity(name = "Veiculos")
-public class Veiculo {
+@Entity(name = "Servicos")
+public class Servico {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank
-  private String nomeVeiculo;
+  private String nomeServico;
 
   @NotBlank
-  private String prefixo;
-
-  @NotBlank
-  private Integer horimetro;
+  private Double price;
 }
