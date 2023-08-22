@@ -1,8 +1,10 @@
-package com.diesel_workshop_manager.diesel_workshop_manager.models.entity;
+package com.diesel_workshop_manager.diesel_workshop_manager.models.usuario;
 
-import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.diesel_workshop_manager.diesel_workshop_manager.models.endereco.Endereco;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,31 +18,34 @@ import lombok.Data;
 
 @Data
 @Builder
-@Entity(name = "Clientes")
-public class Cliente {
+@Entity(name = "Usuarios")
+public class Usuario {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank
-  private String nomeCliente;
+  private String nomeUsuario;
 
   @CPF
   private String cpf;
 
-  @CNPJ
-  private String CNPJ;
-
   @Email
-  @NotBlank
   private String email;
 
   @NotBlank
-  @OneToOne
   @Embedded
+  @OneToOne
   private Endereco endereco;
 
   @NotBlank
-  private String telefone;
+  private Integer telefone;
+
+  @NotBlank
+  @Column(unique = true)
+  private String login;
+
+  @NotBlank
+  private String senha;
 }

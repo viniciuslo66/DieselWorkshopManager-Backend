@@ -1,6 +1,8 @@
-package com.diesel_workshop_manager.diesel_workshop_manager.models.entity;
+package com.diesel_workshop_manager.diesel_workshop_manager.models.orcamento;
 
 import java.util.Date;
+
+import com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio.Relatorio;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

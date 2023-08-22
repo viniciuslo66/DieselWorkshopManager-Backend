@@ -1,6 +1,11 @@
-package com.diesel_workshop_manager.diesel_workshop_manager.models.entity;
+package com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio;
 
 import java.util.Date;
+
+import com.diesel_workshop_manager.diesel_workshop_manager.models.cliente.Cliente;
+import com.diesel_workshop_manager.diesel_workshop_manager.models.servico.Servico;
+import com.diesel_workshop_manager.diesel_workshop_manager.models.usuario.Usuario;
+import com.diesel_workshop_manager.diesel_workshop_manager.models.veiculo.Veiculo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
