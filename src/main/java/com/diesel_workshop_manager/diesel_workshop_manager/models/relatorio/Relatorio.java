@@ -1,6 +1,7 @@
 package com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio;
 
 import java.util.Date;
+import java.util.List;
 
 import com.diesel_workshop_manager.diesel_workshop_manager.models.cliente.Cliente;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.servico.Servico;
@@ -15,11 +16,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "Relatorios")
 public class Relatorio {
 
@@ -41,7 +46,7 @@ public class Relatorio {
 
   @NotNull
   @OneToMany
-  private Servico[] servicos;
+  private List<Servico> servicos;
 
   @NotBlank
   private Date dataInicio;
