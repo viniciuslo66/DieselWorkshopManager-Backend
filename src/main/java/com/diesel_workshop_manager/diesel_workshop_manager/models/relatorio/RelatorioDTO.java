@@ -1,6 +1,7 @@
 package com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.diesel_workshop_manager.diesel_workshop_manager.models.cliente.ClienteDTO;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.servico.ServicoDTO;
@@ -17,7 +18,7 @@ public class RelatorioDTO {
   private ClienteDTO clienteDTO;
   private UsuarioDTO usuarioDTO;
   private VeiculoDTO veiculoDTO;
-  private ServicoDTO[] servicoDTOs;
+  private Map<ServicoDTO, Integer> servicoDTOs;
   private Date dataInicio;
   private Date dataFim;
 }

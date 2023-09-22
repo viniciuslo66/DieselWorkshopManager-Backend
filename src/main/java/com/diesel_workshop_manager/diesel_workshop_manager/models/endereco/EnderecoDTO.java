@@ -8,8 +8,9 @@ import lombok.Data;
 public class EnderecoDTO {
   private Long id;
   private String estado;
+  private String cidade;
   private String bairro;
-  private String nua;
+  private String rua;
   private int numero;
   private int cep;
 }
