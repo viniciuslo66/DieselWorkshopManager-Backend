@@ -1,6 +1,9 @@
 package com.diesel_workshop_manager.diesel_workshop_manager.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,7 +16,6 @@ import com.diesel_workshop_manager.diesel_workshop_manager.models.cliente.Client
 import com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio.Relatorio;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio.RelatorioDTO;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.servico.Servico;
-import com.diesel_workshop_manager.diesel_workshop_manager.models.servico.ServicoDTO;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.usuario.Usuario;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.veiculo.Veiculo;
 import com.diesel_workshop_manager.diesel_workshop_manager.repository.RelatorioRepository;
@@ -76,7 +78,7 @@ public class RelatorioService {
   public List<Relatorio> findRelatoriosByIds(List<Long> ids) {
     return repository.findByIdIn(ids);
   }
-  
+
   // ------------------------------- converter -------------------------------
 
   private Relatorio converter(RelatorioDTO dto, Optional<Relatorio> optional) {
@@ -86,25 +88,32 @@ public class RelatorioService {
     Usuario usuario = usuarioService.findById(dto.getUsuarioDTO().getId());
     Veiculo veiculo = veiculoService.findById(dto.getVeiculoDTO().getId());
 
-    List<Long> ids = dto.getServicoDTOs().stream()
-        .map(ServicoDTO::getId)
-        .collect(Collectors.toList());
+    Map<Long, Integer> idsQuantidades = dto.getServicoDTOs().entrySet().stream()
+        .collect(Collectors.toMap(
+            entry -> entry.getKey().getId(), // Obtém o ID do ServicoDTO
+            Map.Entry::getValue // Obtém a quantidade do ServicoDTO
+        ));
 
-    if (ids.isEmpty()) {
+    if (idsQuantidades.isEmpty()) {
       throw new RegraNegocioException("Nenhum serviço encontrado para os IDs informados.");
     }
 
-    List<Servico> servicos = servicoService.findServicosByIds(ids);
+    List<Servico> servicos = servicoService.findServicosByIds(new ArrayList<>(idsQuantidades.keySet()));
+
+    // Configure o mapa quantidadeServicos em Relatorio com base em idsQuantidades
+    Map<Servico, Integer> servicosQuantidade = new HashMap<>();
+    for (Servico servico : servicos) {
+      servicosQuantidade.put(servico, idsQuantidades.get(servico.getId()));
+    }
 
     relatorio.setDataInicio(dto.getDataInicio());
     relatorio.setDataFim(dto.getDataFim());
     relatorio.setCliente(cliente);
     relatorio.setUsuario(usuario);
     relatorio.setVeiculo(veiculo);
-    relatorio.setServicos(servicos);
+    relatorio.setServicos(servicosQuantidade);
 
     return relatorio;
   }
 
-  
 }

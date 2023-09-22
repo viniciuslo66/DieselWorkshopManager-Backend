@@ -1,6 +1,7 @@
 package com.diesel_workshop_manager.diesel_workshop_manager.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ import jakarta.transaction.Transactional;
 public class OrcamentoService {
 
   @Autowired
-  OrcamentoRepository repository; 
+  OrcamentoRepository repository;
   @Autowired
   RelatorioService relatorioService;
 
@@ -102,8 +103,10 @@ public class OrcamentoService {
 
         // Iterar pela lista de ServicoDTOs dentro do RelatorioDTO e somar os preços
         if (relatorioDTO.getServicoDTOs() != null) {
-          for (ServicoDTO servicoDTO : relatorioDTO.getServicoDTOs()) {
-            totalPrecoServicos += servicoDTO.getPrice();
+          for (Map.Entry<ServicoDTO, Integer> entry : relatorioDTO.getServicoDTOs().entrySet()) {
+            ServicoDTO servicoDTO = entry.getKey();
+            Integer quantidade = entry.getValue();
+            totalPrecoServicos += servicoDTO.getPrice() * quantidade;
           }
         }
 

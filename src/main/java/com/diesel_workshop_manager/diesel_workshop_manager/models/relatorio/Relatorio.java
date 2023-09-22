@@ -1,18 +1,22 @@
 package com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 import com.diesel_workshop_manager.diesel_workshop_manager.models.cliente.Cliente;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.servico.Servico;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.usuario.Usuario;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.veiculo.Veiculo;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyJoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -44,9 +48,11 @@ public class Relatorio {
   @OneToOne
   private Veiculo veiculo;
 
-  @NotNull
-  @OneToMany
-  private List<Servico> servicos;
+  @ElementCollection
+  @CollectionTable(name = "Relatorio_Servicos", joinColumns = @JoinColumn(name = "relatorio_id"))
+  @MapKeyJoinColumn(name = "servico_id")
+  @Column(name = "quantidade")
+  private Map<Servico, Integer> servicos;
 
   @NotBlank
   private Date dataInicio;
