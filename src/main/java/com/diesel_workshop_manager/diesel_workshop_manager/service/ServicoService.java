@@ -56,7 +56,7 @@ public class ServicoService {
   }
 
   public Servico findById(Long id) {
-    return repository.findById(id).orElseThrow();
+    return repository.findById(id).orElse(null);
   }
 
   public List<Servico> findServicosByIds(List<Long> ids) {
