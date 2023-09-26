@@ -54,10 +54,10 @@ public class VeiculoService {
   }
 
   public Veiculo findById(Long id) {
-    return repository.findById(id).orElseThrow();
+    return repository.findById(id).orElse(null);
   }
 
-  public List<Veiculo> findByIds(Long[] ids) {
+  public List<Veiculo> findByIds(List<Long> ids) {
     return repository.findByIdIn(ids);
   }
 
