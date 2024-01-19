@@ -4,27 +4,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.diesel_workshop_manager.diesel_workshop_manager.error.RegraNegocioException;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.orcamento.Orcamento;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.orcamento.OrcamentoDTO;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio.Relatorio;
-import com.diesel_workshop_manager.diesel_workshop_manager.models.relatorio.RelatorioDTO;
-import com.diesel_workshop_manager.diesel_workshop_manager.models.servico.ServicoDTO;
+import com.diesel_workshop_manager.diesel_workshop_manager.models.servico.Servico;
 import com.diesel_workshop_manager.diesel_workshop_manager.repository.OrcamentoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+@Service
 public class OrcamentoService {
 
   @Autowired
   OrcamentoRepository repository;
   @Autowired
   RelatorioService relatorioService;
+  @Autowired
+  ServicoService servicoService;
 
   OrcamentoService(OrcamentoRepository repository) {
     this.repository = repository;
@@ -70,9 +72,7 @@ public class OrcamentoService {
   private Orcamento converter(OrcamentoDTO dto, Optional<Orcamento> optional) {
     Orcamento orcamento = Objects.nonNull(optional) ? optional.get() : new Orcamento();
 
-    List<Long> ids = dto.getRelatorioDTOs().stream()
-        .map(RelatorioDTO::getId)
-        .collect(Collectors.toList());
+    List<Long> ids = dto.getRelatorios();
 
     if (ids.isEmpty())
       throw new RegraNegocioException("Nenhum relátório encontrado para os IDs");
@@ -81,10 +81,11 @@ public class OrcamentoService {
 
     orcamento.setRelatorios(relatorios);
 
-    if (!dto.getRelatorioDTOs().isEmpty()) {
+    if (!relatorios.isEmpty()) {
+
       // Inicialize as datas com a primeira data do primeiro relatório
-      orcamento.setDataInicio(dto.getRelatorioDTOs().get(0).getDataInicio());
-      orcamento.setDataFim(dto.getRelatorioDTOs().get(0).getDataFim());
+      orcamento.setDataInicio(relatorios.get(0).getDataInicio());
+      orcamento.setDataFim(relatorios.get(0).getDataFim());
 
       Double totalPrecoServicos = 0.0;
 
@@ -92,35 +93,45 @@ public class OrcamentoService {
        * Itere pela lista de relatórios para encontrar a data mais antiga (dataInicio)
        * e a data mais recente (dataFim)
        */
-      for (RelatorioDTO relatorioDTO : dto.getRelatorioDTOs()) {
 
-        if (relatorioDTO.getDataInicio().before(orcamento.getDataInicio())) {
-          orcamento.setDataInicio(relatorioDTO.getDataInicio());
+      for (Relatorio relatorio : relatorios) {
+
+        if (relatorio.getDataInicio().before(orcamento.getDataInicio())) {
+          orcamento.setDataInicio(relatorio.getDataInicio());
         }
-        if (relatorioDTO.getDataFim().after(orcamento.getDataFim())) {
-          orcamento.setDataFim(relatorioDTO.getDataFim());
+        if (relatorio.getDataFim().after(orcamento.getDataFim())) {
+          orcamento.setDataFim(relatorio.getDataFim());
         }
 
-        // Iterar pela lista de ServicoDTOs dentro do RelatorioDTO e somar os preços
-        if (relatorioDTO.getServicoDTOs() != null) {
-          for (Map.Entry<ServicoDTO, Integer> entry : relatorioDTO.getServicoDTOs().entrySet()) {
-            ServicoDTO servicoDTO = entry.getKey();
+        // Iterar pela lista de servicos dentro do Relatorio e somar os preços
+        if (relatorio.getServicos() != null) {
+          for (Map.Entry<Servico, Integer> entry : relatorio.getServicos().entrySet()) {
+            Servico servico = servicoService.findById(entry.getKey().getId());
             Integer quantidade = entry.getValue();
-            totalPrecoServicos += servicoDTO.getPrice() * quantidade;
+
+            if (servico != null) {
+              Double preco = servico.getPrice();
+              totalPrecoServicos += preco * quantidade;
+            }
+
           }
         }
 
         orcamento.setSubtotal(totalPrecoServicos);
-        orcamento.setDesconto(totalPrecoServicos * 0.10);
-        orcamento.setTotalPrice(totalPrecoServicos + (totalPrecoServicos * 0.10));
       }
+
+      orcamento.setDesconto(totalPrecoServicos * 0.10);
+      orcamento.setTotalPrice(totalPrecoServicos - (totalPrecoServicos * 0.10));
+
     } else {
+
       orcamento.setSubtotal(null);
       orcamento.setDesconto(null);
       orcamento.setTotalPrice(null);
       orcamento.setDataInicio(null);
       orcamento.setDataFim(null);
       throw new RegraNegocioException("A lista de relatórios está vazia");
+      
     }
 
     return orcamento;

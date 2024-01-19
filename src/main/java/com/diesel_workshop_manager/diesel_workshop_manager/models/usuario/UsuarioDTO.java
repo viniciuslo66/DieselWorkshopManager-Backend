@@ -1,7 +1,5 @@
 package com.diesel_workshop_manager.diesel_workshop_manager.models.usuario;
 
-import com.diesel_workshop_manager.diesel_workshop_manager.models.endereco.EnderecoDTO;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,7 +10,7 @@ public class UsuarioDTO {
   private String nomeUsuario;
   private String cpf;
   private String email;
-  private EnderecoDTO enderecoDTO;
+  private Long endereco;
   private Integer telefone;
   private String login;
   private String senha;

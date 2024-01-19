@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,17 +34,17 @@ public class Usuario {
   private String nomeUsuario;
 
   @CPF
+  @NotNull
   private String cpf;
 
   @Email
   private String email;
 
-  @NotBlank
   @Embedded
   @OneToOne
   private Endereco endereco;
 
-  @NotBlank
+  @NotNull
   private Integer telefone;
 
   @NotBlank

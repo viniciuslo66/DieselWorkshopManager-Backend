@@ -23,7 +23,19 @@ public class ServicoService {
   ServicoService(ServicoRepository repository) {
     this.repository = repository;
   }
+  
+  public List<Servico> listarServicos() {
+    return repository.findAll();
+  }
 
+  public Servico findById(Long id) {
+    return repository.findById(id).orElse(null);
+  }
+
+  public List<Servico> findServicosByIds(List<Long> ids) {
+    return repository.findByIdIn(ids);
+  }
+  
   @Transactional
   public Servico saveServico(ServicoDTO serviceDto) {
     Servico servico = converter(serviceDto, null);
@@ -51,17 +63,6 @@ public class ServicoService {
     repository.delete(servico);
   }
 
-  public List<Servico> listarServicos() {
-    return repository.findAll();
-  }
-
-  public Servico findById(Long id) {
-    return repository.findById(id).orElse(null);
-  }
-
-  public List<Servico> findServicosByIds(List<Long> ids) {
-    return repository.findByIdIn(ids);
-  }
 
   // ------------------------------- converter -------------------------------
 
