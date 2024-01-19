@@ -42,7 +42,6 @@ public class Cliente {
   @NotBlank
   private String email;
 
-  @NotBlank
   @OneToOne
   @Embedded
   private Endereco endereco;

@@ -16,9 +16,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyJoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,16 +35,14 @@ public class Relatorio {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull
-  @OneToOne
+  @ManyToOne
   private Cliente cliente;
 
-  @NotNull
-  @OneToOne
+  @ManyToOne
   private Usuario usuario;
 
   @NotNull
-  @OneToOne
+  @ManyToOne
   private Veiculo veiculo;
 
   @ElementCollection
@@ -54,10 +51,10 @@ public class Relatorio {
   @Column(name = "quantidade")
   private Map<Servico, Integer> servicos;
 
-  @NotBlank
+  @NotNull
   private Date dataInicio;
 
-  @NotBlank
+  @NotNull
   private Date dataFim;
 
 }

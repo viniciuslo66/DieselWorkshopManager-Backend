@@ -20,9 +20,19 @@ public class UsuarioService {
 
   @Autowired
   UsuarioRepository repository;
+  @Autowired
+  EnderecoService enderecoService;
 
   public UsuarioService(UsuarioRepository repository) {
     this.repository = repository;
+  }
+
+  public List<Usuario> listarUsuario() {
+    return repository.findAll();
+  }
+
+  public Usuario findById(Long id) {
+    return repository.findById(id).orElse(null);
   }
 
   @Transactional
@@ -46,17 +56,10 @@ public class UsuarioService {
   @Transactional
   public void deleteUser(Long id) {
     Optional<Usuario> optional = repository.findById(id);
-    Usuario user = optional.orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado"));
+    Usuario user = optional
+        .orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado"));
 
     repository.delete(user);
-  }
-
-  public List<Usuario> listarUsuario() {
-    return repository.findAll();
-  }
-
-  public Usuario findById(Long id) {
-    return repository.findById(id).orElseThrow();
   }
 
   // ------------------------------- converter -------------------------------
@@ -71,14 +74,9 @@ public class UsuarioService {
     usuario.setLogin(dto.getLogin());
     usuario.setSenha(dto.getSenha());
 
-    if (dto.getEnderecoDTO() != null) {
-      Endereco endereco = new Endereco();
-      endereco.setEstado(dto.getEnderecoDTO().getEstado());
-      endereco.setCidade(dto.getEnderecoDTO().getCidade());
-      endereco.setBairro(dto.getEnderecoDTO().getBairro());
-      endereco.setRua(dto.getEnderecoDTO().getRua());
-      endereco.setCep(dto.getEnderecoDTO().getCep());
-      endereco.setNumero(dto.getEnderecoDTO().getNumero());
+    Endereco endereco = enderecoService.findById(dto.getEndereco());
+
+    if (endereco != null) {
       usuario.setEndereco(endereco);
     } else {
       usuario.setEndereco(null);

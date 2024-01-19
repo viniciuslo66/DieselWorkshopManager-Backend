@@ -19,6 +19,8 @@ import jakarta.transaction.Transactional;
 public class ClienteService {
     @Autowired
     ClienteRepository repository;
+    @Autowired
+    EnderecoService enderecoService;
 
     ClienteService(ClienteRepository repository) {
         this.repository = repository;
@@ -50,7 +52,7 @@ public class ClienteService {
         repository.delete(cliente);
     }
 
-    public List<Cliente> listarOrcamentos() {
+    public List<Cliente> listarClientes() {
         return repository.findAll();
     }
 
@@ -69,15 +71,9 @@ public class ClienteService {
         cliente.setCNPJ(dto.getCnpj());
         cliente.setTelefone(dto.getTelefone());
         cliente.setEmail(dto.getEmail());
+        Endereco endereco = enderecoService.findById(dto.getEndereco());
 
-        if (dto.getEnderecoDTO() != null) {
-            Endereco endereco = new Endereco();
-            endereco.setEstado(dto.getEnderecoDTO().getEstado());
-            endereco.setCidade(dto.getEnderecoDTO().getCidade());
-            endereco.setBairro(dto.getEnderecoDTO().getBairro());
-            endereco.setRua(dto.getEnderecoDTO().getRua());
-            endereco.setCep(dto.getEnderecoDTO().getCep());
-            endereco.setNumero(dto.getEnderecoDTO().getNumero());
+        if (endereco != null) {
             cliente.setEndereco(endereco);
         } else {
             cliente.setEndereco(null);

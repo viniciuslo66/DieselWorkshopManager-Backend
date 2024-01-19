@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,15 +83,11 @@ public class RelatorioService {
   private Relatorio converter(RelatorioDTO dto, Optional<Relatorio> optional) {
     Relatorio relatorio = Objects.nonNull(optional) ? optional.get() : new Relatorio();
 
-    Cliente cliente = clienteService.findById(dto.getClienteDTO().getId());
-    Usuario usuario = usuarioService.findById(dto.getUsuarioDTO().getId());
-    Veiculo veiculo = veiculoService.findById(dto.getVeiculoDTO().getId());
+    Cliente cliente = clienteService.findById(dto.getCliente());
+    Usuario usuario = usuarioService.findById(dto.getUsuario());
+    Veiculo veiculo = veiculoService.findById(dto.getVeiculo());
 
-    Map<Long, Integer> idsQuantidades = dto.getServicoDTOs().entrySet().stream()
-        .collect(Collectors.toMap(
-            entry -> entry.getKey().getId(), // Obtém o ID do ServicoDTO
-            Map.Entry::getValue // Obtém a quantidade do ServicoDTO
-        ));
+    Map<Long, Integer> idsQuantidades = dto.getServicos();
 
     if (idsQuantidades.isEmpty()) {
       throw new RegraNegocioException("Nenhum serviço encontrado para os IDs informados.");
@@ -102,6 +97,7 @@ public class RelatorioService {
 
     // Configure o mapa quantidadeServicos em Relatorio com base em idsQuantidades
     Map<Servico, Integer> servicosQuantidade = new HashMap<>();
+    
     for (Servico servico : servicos) {
       servicosQuantidade.put(servico, idsQuantidades.get(servico.getId()));
     }

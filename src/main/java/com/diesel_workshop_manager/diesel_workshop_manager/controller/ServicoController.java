@@ -33,7 +33,7 @@ public class ServicoController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<?> findById(@PathVariable Long id) {
+  public ResponseEntity<?> findById(@PathVariable("id") Long id) {
     try {
       Servico servico = service.findById(id);
       if (servico != null)
@@ -85,7 +85,7 @@ public class ServicoController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable Long id) {
+  public ResponseEntity<?> delete(@PathVariable("id") Long id) {
     try {
       Servico servico = service.findById(id);
       if (servico != null) {

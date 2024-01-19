@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.diesel_workshop_manager.diesel_workshop_manager.models.endereco.Endereco;
 import com.diesel_workshop_manager.diesel_workshop_manager.models.endereco.EnderecoDTO;
@@ -13,58 +14,60 @@ import com.diesel_workshop_manager.diesel_workshop_manager.repository.EnderecoRe
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+@Service
 public class EnderecoService {
-    @Autowired
-    EnderecoRepository repository;
+  @Autowired
+  EnderecoRepository repository;
 
-    EnderecoService(EnderecoRepository repository) {
-        this.repository = repository;
+  EnderecoService(EnderecoRepository repository) {
+    this.repository = repository;
+  }
+
+  @Transactional
+  public Endereco saveEndereco(EnderecoDTO dto) {
+    Endereco endereco = converter(dto, null);
+    return repository.save(endereco);
+  }
+
+  @Transactional
+  public Endereco atualizarEndereco(Long id, EnderecoDTO dto) {
+    Optional<Endereco> optional = repository.findById(id);
+
+    if (!optional.isPresent()) {
+      throw new EntityNotFoundException("Endereço não encontrado");
     }
 
-    @Transactional
-    public Endereco saveEndereco(EnderecoDTO dto) {
-        Endereco endereco = converter(dto, null);
-        return repository.save(endereco);
-    }
+    Endereco endereco = converter(dto, optional);
+    return repository.save(endereco);
+  }
 
-    @Transactional
-    public Endereco updateEndereco(Long id, EnderecoDTO dto) {
-        Optional<Endereco> optional = repository.findById(id);
+  public List<Endereco> listaEnderecos() {
+    return repository.findAll();
+  }
 
-        if (!optional.isPresent()) {
-            throw new EntityNotFoundException("Endereço não encontrado");
-        }
+  public Endereco findById(Long id) {
+    return repository.findById(id).orElse(null);
+  }
 
-        Endereco endereco = converter(dto, optional);
-        return repository.save(endereco);
-    }
+  @Transactional
+  public void deleteEndereco(Long id) {
+    Optional<Endereco> optional = repository.findById(id);
+    Endereco endereco = optional
+        .orElseThrow(() -> new EntityNotFoundException("Endereco não encontrado"));
 
-    public List<Endereco> listaEnderecos() {
-        return repository.findAll();
-    }
+    repository.delete(endereco);
+  }
 
-    public Endereco findById(Long id) {
-        return repository.findById(id).orElseThrow();
-    }
+  private Endereco converter(EnderecoDTO dto, Optional<Endereco> optional) {
+    Endereco endereco = Objects.nonNull(optional) ? optional.get() : new Endereco();
 
-    @Transactional
-    public void deleteEndereco(Long id) {
-        Optional<Endereco> optional = repository.findById(id);
-        Endereco endereco = optional.orElseThrow(() -> new EntityNotFoundException("Endereco não encontrado"));
+    endereco.setEstado(dto.getEstado());
+    endereco.setCidade(dto.getCidade());
+    endereco.setBairro(dto.getBairro());
+    endereco.setCep(dto.getCep());
+    endereco.setRua(dto.getRua());
+    endereco.setNumero(dto.getNumero());
 
-        repository.delete(endereco);
-    }
-
-    private Endereco converter(EnderecoDTO dto, Optional<Endereco> optional) {
-        Endereco endereco = Objects.nonNull(optional) ? optional.get() : new Endereco();
-
-        endereco.setEstado(dto.getEstado());
-        endereco.setCidade(dto.getCidade());
-        endereco.setBairro(dto.getBairro());
-        endereco.setCep(dto.getCep());
-        endereco.setRua(dto.getRua());
-        endereco.setNumero(dto.getNumero());
-
-        return endereco;
-    }
+    return endereco;
+  }
 }

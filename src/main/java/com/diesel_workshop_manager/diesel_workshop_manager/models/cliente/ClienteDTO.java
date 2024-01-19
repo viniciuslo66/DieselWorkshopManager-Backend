@@ -1,7 +1,5 @@
 package com.diesel_workshop_manager.diesel_workshop_manager.models.cliente;
 
-import com.diesel_workshop_manager.diesel_workshop_manager.models.endereco.EnderecoDTO;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,6 +11,6 @@ public class ClienteDTO {
   private String cpf;
   private String cnpj;
   private String email;
-  private EnderecoDTO enderecoDTO;
+  private Long endereco;
   private String telefone;
 }
