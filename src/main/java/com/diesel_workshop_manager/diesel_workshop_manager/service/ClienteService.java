@@ -15,6 +15,7 @@ import com.diesel_workshop_manager.diesel_workshop_manager.repository.ClienteRep
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+@SuppressWarnings("null")
 @Service
 public class ClienteService {
     @Autowired

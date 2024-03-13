@@ -14,6 +14,7 @@ import com.diesel_workshop_manager.diesel_workshop_manager.repository.VeiculoRep
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+@SuppressWarnings("null")
 @Service
 public class VeiculoService {
   @Autowired
@@ -23,6 +24,7 @@ public class VeiculoService {
     this.repository = repository;
   }
 
+  
   @Transactional
   public Veiculo saveVeiculo(VeiculoDTO dto) {
     Veiculo veiculo = converter(dto, null);
