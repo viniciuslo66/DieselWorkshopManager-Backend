@@ -70,7 +70,7 @@ public class OrcamentoService {
   // ------------------------------- converter -------------------------------
 
   private Orcamento converter(OrcamentoDTO dto, Optional<Orcamento> optional) {
-    Orcamento orcamento = optional.orElse(new Orcamento());
+    Orcamento orcamento = optional != null ? optional.orElse(new Orcamento()) : new Orcamento();
 
     List<Long> ids = dto.getRelatorios();
 
@@ -120,10 +120,13 @@ public class OrcamentoService {
   }
 
   private void ajustarDatas(Orcamento orcamento, Relatorio relatorio) {
-    if (relatorio.getDataInicio().before(orcamento.getDataInicio())) {
+    if (relatorio.getDataInicio() != null
+        && (orcamento.getDataInicio() == null || relatorio.getDataInicio().before(orcamento.getDataInicio()))) {
       orcamento.setDataInicio(relatorio.getDataInicio());
     }
-    if (relatorio.getDataFim().after(orcamento.getDataFim())) {
+
+    if (relatorio.getDataFim() != null
+        && (orcamento.getDataFim() == null || relatorio.getDataFim().after(orcamento.getDataFim()))) {
       orcamento.setDataFim(relatorio.getDataFim());
     }
   }
